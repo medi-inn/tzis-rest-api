@@ -2,6 +2,8 @@ package com.msr.tzis;
 
 import com.msr.tzis.model.Kabine;
 import com.msr.tzis.model.KabineRepository;
+import com.msr.tzis.model.OrderRepository;
+import com.msr.tzis.model.Ordering;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,9 +12,11 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class KabineController {
     private final KabineRepository repository;
+    private final OrderRepository orderRepository;
 
-    public KabineController(KabineRepository repository){
+    public KabineController(KabineRepository repository, OrderRepository orderRepository){
         this.repository = repository;
+        this.orderRepository = orderRepository;
     }
 
     @GetMapping("/kabine")
@@ -52,6 +56,12 @@ public class KabineController {
     @DeleteMapping("/kabine/{id}")
     @CrossOrigin(origins = "*")
     void deleteKabine(@PathVariable Long id){
+        List<Ordering> orders = orderRepository.findAll();
+        for (Ordering order : orders){
+            if (id.equals(order.getKabine().getId())){
+                orderRepository.delete(order);
+            }
+        }
         repository.deleteById(id);
     }
 

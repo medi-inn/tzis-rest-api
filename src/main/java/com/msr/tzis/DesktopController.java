@@ -2,6 +2,8 @@ package com.msr.tzis;
 
 import com.msr.tzis.model.Desktop;
 import com.msr.tzis.model.DesktopRepository;
+import com.msr.tzis.model.OrderRepository;
+import com.msr.tzis.model.Ordering;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,9 +12,11 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class DesktopController {
     private final DesktopRepository repository;
+    private final OrderRepository orderRepository;
 
-    public DesktopController(DesktopRepository repository){
+    public DesktopController(DesktopRepository repository, OrderRepository orderRepository){
         this.repository = repository;
+        this.orderRepository = orderRepository;
     }
 
     @GetMapping("/desktop")
@@ -52,6 +56,12 @@ public class DesktopController {
     @DeleteMapping("/desktop/{id}")
     @CrossOrigin(origins = "*")
     void deleteDesktop(@PathVariable Long id){
+        List<Ordering> orders = orderRepository.findAll();
+        for (Ordering order : orders){
+            if (id.equals(order.getDesktop().getId())){
+                orderRepository.delete(order);
+            }
+        }
         repository.deleteById(id);
     }
 }

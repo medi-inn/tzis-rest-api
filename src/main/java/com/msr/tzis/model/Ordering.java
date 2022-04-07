@@ -1,6 +1,9 @@
 package com.msr.tzis.model;
 
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -14,13 +17,13 @@ public class Ordering {
     String message;
     private int status;
 
-    @OneToOne
+    @ManyToOne
     private Kabine kabine;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ItemLine> items;
 
-    @OneToOne
+    @ManyToOne
     private Desktop desktop;
 
     public Ordering(){}
